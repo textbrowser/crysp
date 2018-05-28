@@ -65,13 +65,7 @@
   (setf m_v0 (mod (+ m_v0 m_v3) POW_2_64))
   (setf m_v3 (rotl m_v3 21))
   (setf m_v3 (logxor m_v0 m_v3))
-
-  (let ((array (make-array 4 :element-type '(signed-byte 64))))
-    (setf (aref array 0) m_v0)
-    (setf (aref array 1) m_v1)
-    (setf (aref array 2) m_v2)
-    (setf (aref array 3) m_v3)
-    array)
+  (values m_v0 m_v1 m_v2 m_v3)
 )
 
 (defun crysp_siphash (c_round d_round data key)
@@ -85,8 +79,7 @@
   (declare (type (signed-byte 64) m_v2))
   (declare (type (signed-byte 64) m_v3))
 
-  (let ((array (make-array 3 :element-type '(signed-byte 64)))
-	(b 0)
+  (let ((b 0)
 	(hmac 0)
 	(k0 0)
 	(k1 0)
@@ -114,11 +107,8 @@
 	  (setf m_v3 (logxor m_v3 m))
 
 	  (loop for j from 0 to (1- (aref C_ROUNDS c_round)) do
-		(setf array (siphash_round m_v0 m_v1 m_v2 m_v3))
-		(setf m_v0 (aref array 0))
-		(setf m_v1 (aref array 1))
-		(setf m_v2 (aref array 2))
-		(setf m_v3 (aref array 3)))
+		(multiple-value-setq (m_v0 m_v1 m_v2 m_v3)
+				     (siphash_round m_v0 m_v1 m_v2 m_v3)))
 
 	  (setf m_v0 (logxor m_v0 m)))
 
@@ -149,11 +139,8 @@
     (setf m_v3 (logxor m_v3 b))
 
     (loop for i from 0 to (1- (aref C_ROUNDS c_round)) do
-	  (setf array (siphash_round m_v0 m_v1 m_v2 m_v3))
-	  (setf m_v0 (aref array 0))
-	  (setf m_v1 (aref array 1))
-	  (setf m_v2 (aref array 2))
-	  (setf m_v3 (aref array 3)))
+	  (multiple-value-setq (m_v0 m_v1 m_v2 m_v3)
+			       (siphash_round m_v0 m_v1 m_v2 m_v3)))
 
     (setf m_v0 (logxor m_v0 b))
 
@@ -162,11 +149,8 @@
     (setf m_v2 (logxor m_v2 #xff))
 
     (loop for i from 0 to (1- (aref D_ROUNDS d_round)) do
-	  (setf array (siphash_round m_v0 m_v1 m_v2 m_v3))
-	  (setf m_v0 (aref array 0))
-	  (setf m_v1 (aref array 1))
-	  (setf m_v2 (aref array 2))
-	  (setf m_v3 (aref array 3)))
+	  (multiple-value-setq (m_v0 m_v1 m_v2 m_v3)
+			       (siphash_round m_v0 m_v1 m_v2 m_v3)))
 
     (setf hmac (logxor m_v0 m_v1 m_v2 m_v3))
     hmac)
