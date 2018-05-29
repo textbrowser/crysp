@@ -69,16 +69,6 @@
 )
 
 (defun crysp_siphash (c_round d_round data key)
-  (declare (type (signed-byte 64) b))
-  (declare (type (signed-byte 64) hmac))
-  (declare (type (signed-byte 64) k0))
-  (declare (type (signed-byte 64) k1))
-  (declare (type (signed-byte 64) m))
-  (declare (type (signed-byte 64) m_v0))
-  (declare (type (signed-byte 64) m_v1))
-  (declare (type (signed-byte 64) m_v2))
-  (declare (type (signed-byte 64) m_v3))
-
   (let ((b 0)
 	(hmac 0)
 	(k0 0)
