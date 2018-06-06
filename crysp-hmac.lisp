@@ -23,8 +23,58 @@
 ;; (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 ;; CRYSP, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-(defun crysp_hmac (data key)
+(defun crysp_hmac (block_length data key method)
+  (let* ((array1 (make-array 1
+			     :adjustable t
+			     :element-type '(signed-byte 8)))
+	 (ipad (make-array block_length :initial-element #x36))
+	 (k (make-array (array-total-size key)
+			:adjustable t
+			:element-type '(signed-byte 8)))
+	 (left (make-array block_length
+			   :element-type '(signed-byte 8)
+			   :initial-element 0))
+	 (opad (make-array block_length :initial-element #x5c))
+	 (right (make-array block_length
+			    :element-type '(signed-byte 8)
+			    :initial-element 0)))
+
+    (dotimes (i (array-total-size key))
+      (setf (aref k i) (aref key i)))
+
+    (if (< block_length (array-total-size k))
+	(setf k (funcall method k)))
+
+    (if (> block_length (array-total-size k))
+	(let ((array (make-array (- block_length (array-total-size k))
+				 :element-type '(signed-byte 8)
+				 :initial-element 0)))
+	  (setq k (concatenate 'array k array))))
+
+    (dotimes (i block_length)
+      (setf (aref left i) (logxor (aref k i) (aref opad i))))
+
+    (dotimes (i block_length)
+      (setf (aref right i) (logxor (aref k i) (aref ipad i))))
+
+    (setf array1 (funcall method (concatenate 'array right data)))
+
+    (dotimes (i (array-total-size array1))
+      (setq left
+	    (concatenate 'array left (number_to_bytes (aref array1 i)))))
+
+    (funcall method left))
 )
 
-(defun test1 ()
+(defun sha_512_hmac_test1 ()
+  (print "3926a207c8c42b0c41792cbd3e1a1aaaf5f7a25704f62dfc939c4987dd7ce060009c5bb1c2447355b3216f10b537e9afa7b64a4e5391b0d631172d07939e087a")
+  (print (write-to-string
+	  (crysp_hmac 128
+		      (make-array 3
+				  :element-type '(signed-byte 8)
+				  :initial-contents '(97 98 99))
+		      (make-array 3
+				  :element-type '(signed-byte 8)
+				  :initial-contents '(107 101 121))
+		      'crysp_sha_512) :base 16))
 )
