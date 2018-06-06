@@ -24,7 +24,10 @@
 ;; CRYSP, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 (defun crysp_hmac (block_length data key method)
-  (let* ((array1 (make-array 1
+  (let* ((array1 (make-array 0
+			     :adjustable t
+			     :element-type '(signed-byte 8)))
+	 (array2 (make-array 0
 			     :adjustable t
 			     :element-type '(signed-byte 8)))
 	 (ipad (make-array block_length :initial-element #x36))
@@ -58,12 +61,13 @@
       (setf (aref right i) (logxor (aref k i) (aref ipad i))))
 
     (setf array1 (funcall method (concatenate 'array right data)))
+    (setf array2 left)
 
     (dotimes (i (array-total-size array1))
-      (setq left
-	    (concatenate 'array left (number_to_bytes (aref array1 i)))))
+      (setf array2
+	    (concatenate 'array array2 (number_to_bytes (aref array1 i)))))
 
-    (funcall method left))
+    (funcall method array2))
 )
 
 (defun sha_512_hmac_test1 ()
