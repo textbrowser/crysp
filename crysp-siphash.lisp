@@ -146,8 +146,8 @@
 )
 
 (defun test1 ()
-  (let ((data (make-array 15 :element-type '(signed-byte 8)))
-	(key (make-array 16 :element-type '(signed-byte 8))))
+  (let ((data (make-array 15 :element-type '(unsigned-byte 8)))
+	(key (make-array 16 :element-type '(unsigned-byte 8))))
 
     (loop for i from 0 to (1- (array-total-size data)) do
 	  (setf (aref data i) i))

@@ -26,20 +26,20 @@
 (defun crysp_hmac (block_length data key method)
   (let* ((array1 (make-array 0
 			     :adjustable t
-			     :element-type '(signed-byte 8)))
+			     :element-type '(unsigned-byte 8)))
 	 (array2 (make-array 0
 			     :adjustable t
-			     :element-type '(signed-byte 8)))
+			     :element-type '(unsigned-byte 8)))
 	 (ipad (make-array block_length :initial-element #x36))
 	 (k (make-array (array-total-size key)
 			:adjustable t
-			:element-type '(signed-byte 8)))
+			:element-type '(unsigned-byte 8)))
 	 (left (make-array block_length
-			   :element-type '(signed-byte 8)
+			   :element-type '(unsigned-byte 8)
 			   :initial-element 0))
 	 (opad (make-array block_length :initial-element #x5c))
 	 (right (make-array block_length
-			    :element-type '(signed-byte 8)
+			    :element-type '(unsigned-byte 8)
 			    :initial-element 0)))
 
     (dotimes (i (array-total-size key))
@@ -50,9 +50,9 @@
 
     (if (> block_length (array-total-size k))
 	(let ((array (make-array (- block_length (array-total-size k))
-				 :element-type '(signed-byte 8)
+				 :element-type '(unsigned-byte 8)
 				 :initial-element 0)))
-	  (setq k (concatenate 'array k array))))
+	  (setq k (concatenate 'vector k array))))
 
     (dotimes (i block_length)
       (setf (aref left i) (logxor (aref k i) (aref opad i))))
@@ -60,12 +60,12 @@
     (dotimes (i block_length)
       (setf (aref right i) (logxor (aref k i) (aref ipad i))))
 
-    (setf array1 (funcall method (concatenate 'array right data)))
+    (setf array1 (funcall method (concatenate 'vector right data)))
     (setf array2 left)
 
     (dotimes (i (array-total-size array1))
       (setf array2
-	    (concatenate 'array array2 (number_to_bytes (aref array1 i)))))
+	    (concatenate 'vector array2 (number_to_bytes (aref array1 i)))))
 
     (funcall method array2))
 )
@@ -75,10 +75,10 @@
   (print (write-to-string
 	  (crysp_hmac 128
 		      (make-array 3
-				  :element-type '(signed-byte 8)
+				  :element-type '(unsigned-byte 8)
 				  :initial-contents '(97 98 99))
 		      (make-array 3
-				  :element-type '(signed-byte 8)
+				  :element-type '(unsigned-byte 8)
 				  :initial-contents '(107 101 121))
 		      'crysp_sha_512) :base 16))
 )
