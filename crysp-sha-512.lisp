@@ -23,38 +23,6 @@
 ;; (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 ;; CRYSP, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-(defun Ch (x y z)
-  (logxor (logand x y) (logand (lognot x) z))
-)
-
-(defun Maj (x y z)
-  (logxor (logand x y) (logand x z) (logand y z))
-)
-
-(defun ROTR (n x)
-  (logior (ash x (- n)) (ash x (- 64 n)))
-)
-
-(defun SA0_512 (x)
-  (logxor (ROTR 28 x) (ROTR 34 x) (ROTR 39 x))
-)
-
-(defun SA1_512 (x)
-  (logxor (ROTR 14 x) (ROTR 18 x) (ROTR 41 x))
-)
-
-(defun SHR (n x)
-  (logand (ash x (- n)) (1- (ash 1 64)))
-)
-
-(defun sb0_512 (x)
-  (logxor (ROTR 1 x) (ROTR 8 x) (SHR 7 x))
-)
-
-(defun sb1_512 (x)
-  (logxor (ROTR 19 x) (ROTR 61 x) (SHR 6 x))
-)
-
 (defvar s_sha_512_h
   (make-array 8
 	      :element-type '(unsigned-byte 64)
@@ -180,117 +148,134 @@
 )
 
 (defun crysp_sha_512 (data)
-  ;; Initializations.
+  (labels ((Ch (x y z)
+	       (logxor (logand x y) (logand (lognot x) z)))
+	   (Maj (x y z)
+		(logxor (logand x y) (logand x z) (logand y z)))
+	   (ROTR (n x)
+		 (logior (ash x (- n)) (ash x (- 64 n))))
+	   (SA0_512 (x)
+		    (logxor (ROTR 28 x) (ROTR 34 x) (ROTR 39 x)))
+	   (SA1_512 (x)
+		    (logxor (ROTR 14 x) (ROTR 18 x) (ROTR 41 x)))
+	   (SHR (n x)
+		(logand (ash x (- n)) (1- (ash 1 64))))
+	   (sb0_512 (x)
+		    (logxor (ROTR 1 x) (ROTR 8 x) (SHR 7 x)))
+	   (sb1_512 (x)
+		    (logxor (ROTR 19 x) (ROTR 61 x) (SHR 6 x))))
 
-  (let* ((HH (make-array 8
-			 :element-type '(unsigned-byte 64)
-			 :initial-element 0))
-	 (K 0)
-	 (M (make-array 16
-			:element-type '(unsigned-byte 64)
-			:initial-element 0))
-	 (N (ceiling (/ (+ (array-total-size data) 17.0) 128.0)))
-	 (T1 0)
-	 (T2 0)
-	 (W (make-array 80
-			:element-type '(unsigned-byte 64)
-			:initial-element 0))
-	 (a 0)
-	 (b 0)
-	 (c 0)
-	 (d 0)
-	 (d8 0)
-	 (e 0)
-	 (f 0)
-	 (g 0)
-	 (h 0)
-	 (hash (make-array (* 128 N)
-			   :element-type '(unsigned-byte 8)
-			   :initial-element 0))
-	 (nn 0)
-	 (number (make-array 8
-			     :element-type '(unsigned-byte 8)
-			     :initial-element 0)))
+	  ;; Initializations.
 
-    (setf d8 (* (array-total-size data) 8))
+	  (let* ((HH (make-array 8
+				 :element-type '(unsigned-byte 64)
+				 :initial-element 0))
+		 (K 0)
+		 (M (make-array 16
+				:element-type '(unsigned-byte 64)
+				:initial-element 0))
+		 (N (ceiling (/ (+ (array-total-size data) 17.0) 128.0)))
+		 (T1 0)
+		 (T2 0)
+		 (W (make-array 80
+				:element-type '(unsigned-byte 64)
+				:initial-element 0))
+		 (a 0)
+		 (b 0)
+		 (c 0)
+		 (d 0)
+		 (d8 0)
+		 (e 0)
+		 (f 0)
+		 (g 0)
+		 (h 0)
+		 (hash (make-array (* 128 N)
+				   :element-type '(unsigned-byte 8)
+				   :initial-element 0))
+		 (nn 0)
+		 (number (make-array 8
+				     :element-type '(unsigned-byte 8)
+				     :initial-element 0)))
 
-    ;; Padding the hash object (5.1.2).
+	    (setf d8 (* (array-total-size data) 8))
 
-    (setf number (number_to_bytes d8))
+	    ;; Padding the hash object (5.1.2).
 
-    ;; Place the contents of the data container into the hash container.
+	    (setf number (number_to_bytes d8))
 
-    (dotimes (i (array-total-size data))
-      (setf (aref hash i) (aref data i)))
+	    ;; Place the contents of the data container into the hash container.
 
-    ;; Place 0x80 at hash[data.length()].
+	    (dotimes (i (array-total-size data))
+	      (setf (aref hash i) (aref data i)))
 
-    (setf (aref hash (array-total-size data)) #x80)
+	    ;; Place 0x80 at hash[data.length()].
 
-    ;; Place the number at the end of the hash container.
+	    (setf (aref hash (array-total-size data)) #x80)
 
-    (setf (aref hash (- (array-total-size hash) 8)) (aref number 0))
-    (setf (aref hash (- (array-total-size hash) 7)) (aref number 1))
-    (setf (aref hash (- (array-total-size hash) 6)) (aref number 2))
-    (setf (aref hash (- (array-total-size hash) 5)) (aref number 3))
-    (setf (aref hash (- (array-total-size hash) 4)) (aref number 4))
-    (setf (aref hash (- (array-total-size hash) 3)) (aref number 5))
-    (setf (aref hash (- (array-total-size hash) 2)) (aref number 6))
-    (setf (aref hash (- (array-total-size hash) 1)) (aref number 7))
+	    ;; Place the number at the end of the hash container.
 
-    ;; Initialize HH (5.3.5).
+	    (setf (aref hash (- (array-total-size hash) 8)) (aref number 0))
+	    (setf (aref hash (- (array-total-size hash) 7)) (aref number 1))
+	    (setf (aref hash (- (array-total-size hash) 6)) (aref number 2))
+	    (setf (aref hash (- (array-total-size hash) 5)) (aref number 3))
+	    (setf (aref hash (- (array-total-size hash) 4)) (aref number 4))
+	    (setf (aref hash (- (array-total-size hash) 3)) (aref number 5))
+	    (setf (aref hash (- (array-total-size hash) 2)) (aref number 6))
+	    (setf (aref hash (- (array-total-size hash) 1)) (aref number 7))
 
-    (dotimes (i 8)
-      (setf (aref HH i) (aref s_sha_512_h i)))
+	    ;; Initialize HH (5.3.5).
 
-    ;; Let's compute the hash (6.4.2).
+	    (dotimes (i 8)
+	      (setf (aref HH i) (aref s_sha_512_h i)))
 
-    (dotimes (i N)
-      (loop for j from 0 to 120 by 8 do
-	    (setf nn (bytes_to_number hash (+ (* 128 i) j)))
-	    (setf (aref M (/ j 8)) nn))
+	    ;; Let's compute the hash (6.4.2).
 
-      (loop for tt from 0 to 15 do
-	    (setf (aref W tt) (aref M tt)))
+	    (dotimes (i N)
+	      (loop for j from 0 to 120 by 8 do
+		    (setf nn (bytes_to_number hash (+ (* 128 i) j)))
+		    (setf (aref M (/ j 8)) nn))
 
-      (loop for tt from 16 to 79 do
-	    (setf (aref W tt)
-		  (logand (+ (sb1_512 (aref W (- tt 2)))
-			     (aref W (- tt 7))
-			     (sb0_512 (aref W (- tt 15)))
-			     (aref W (- tt 16))) #xffffffffffffffff)))
+	      (loop for tt from 0 to 15 do
+		    (setf (aref W tt) (aref M tt)))
 
-      (setf a (aref HH 0))
-      (setf b (aref HH 1))
-      (setf c (aref HH 2))
-      (setf d (aref HH 3))
-      (setf e (aref HH 4))
-      (setf f (aref HH 5))
-      (setf g (aref HH 6))
-      (setf h (aref HH 7))
+	      (loop for tt from 16 to 79 do
+		    (setf (aref W tt)
+			  (logand (+ (sb1_512 (aref W (- tt 2)))
+				     (aref W (- tt 7))
+				     (sb0_512 (aref W (- tt 15)))
+				     (aref W (- tt 16))) #xffffffffffffffff)))
 
-      (loop for tt from 0 to 79 do
-	    (setf K (aref s_sha_512_k tt))
-	    (setf T1 (logand (+ h (SA1_512 e) (Ch e f g) K (aref W tt))
-			     #xffffffffffffffff))
-	    (setf T2 (logand (+ (SA0_512 a) (Maj a b c))
-			     #xffffffffffffffff))
-	    (setf h g)
-	    (setf g f)
-	    (setf f e)
-	    (setf e (logand (+ d T1) #xffffffffffffffff))
-	    (setf d c)
-	    (setf c b)
-	    (setf b a)
-	    (setf a (logand (+ T1 T2) #xffffffffffffffff)))
+	      (setf a (aref HH 0))
+	      (setf b (aref HH 1))
+	      (setf c (aref HH 2))
+	      (setf d (aref HH 3))
+	      (setf e (aref HH 4))
+	      (setf f (aref HH 5))
+	      (setf g (aref HH 6))
+	      (setf h (aref HH 7))
 
-      (setf (aref HH 0) (logand (+ (aref HH 0) a) #xffffffffffffffff))
-      (setf (aref HH 1) (logand (+ (aref HH 1) b) #xffffffffffffffff))
-      (setf (aref HH 2) (logand (+ (aref HH 2) c) #xffffffffffffffff))
-      (setf (aref HH 3) (logand (+ (aref HH 3) d) #xffffffffffffffff))
-      (setf (aref HH 4) (logand (+ (aref HH 4) e) #xffffffffffffffff))
-      (setf (aref HH 5) (logand (+ (aref HH 5) f) #xffffffffffffffff))
-      (setf (aref HH 6) (logand (+ (aref HH 6) g) #xffffffffffffffff))
-      (setf (aref HH 7) (logand (+ (aref HH 7) h) #xffffffffffffffff)))
-    HH)
+	      (loop for tt from 0 to 79 do
+		    (setf K (aref s_sha_512_k tt))
+		    (setf T1 (logand (+ h (SA1_512 e) (Ch e f g) K (aref W tt))
+				     #xffffffffffffffff))
+		    (setf T2 (logand (+ (SA0_512 a) (Maj a b c))
+				     #xffffffffffffffff))
+		    (setf h g)
+		    (setf g f)
+		    (setf f e)
+		    (setf e (logand (+ d T1) #xffffffffffffffff))
+		    (setf d c)
+		    (setf c b)
+		    (setf b a)
+		    (setf a (logand (+ T1 T2) #xffffffffffffffff)))
+
+	      (setf (aref HH 0) (logand (+ (aref HH 0) a) #xffffffffffffffff))
+	      (setf (aref HH 1) (logand (+ (aref HH 1) b) #xffffffffffffffff))
+	      (setf (aref HH 2) (logand (+ (aref HH 2) c) #xffffffffffffffff))
+	      (setf (aref HH 3) (logand (+ (aref HH 3) d) #xffffffffffffffff))
+	      (setf (aref HH 4) (logand (+ (aref HH 4) e) #xffffffffffffffff))
+	      (setf (aref HH 5) (logand (+ (aref HH 5) f) #xffffffffffffffff))
+	      (setf (aref HH 6) (logand (+ (aref HH 6) g) #xffffffffffffffff))
+	      (setf (aref HH 7) (logand (+ (aref HH 7) h) #xffffffffffffffff)))
+	    HH))
 )

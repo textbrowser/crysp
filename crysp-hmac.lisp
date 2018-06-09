@@ -70,7 +70,7 @@
     (funcall method array2))
 )
 
-(defun sha_512_hmac_test1 ()
+(defun test1 ()
   (print "3926a207c8c42b0c41792cbd3e1a1aaaf5f7a25704f62dfc939c4987dd7ce060009c5bb1c2447355b3216f10b537e9afa7b64a4e5391b0d631172d07939e087a")
   (print (write-to-string
 	  (crysp_hmac 128
@@ -81,4 +81,5 @@
 				  :element-type '(unsigned-byte 8)
 				  :initial-contents '(107 101 121))
 		      'crysp_sha_512) :base 16))
+  nil
 )
