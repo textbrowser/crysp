@@ -32,6 +32,9 @@
 (defvar D_ROUNDS (make-array 2 :initial-contents '(4 8)))
 
 (defun crysp_siphash (c_round d_round data key)
+  (if (not (arrayp data)) (return-from crysp_siphash 'expecting-data-array))
+  (if (not (arrayp key)) (return-from crysp_siphash 'expecting-key-array))
+
   (labels ((bytes_to_number (data start)
 			    (let ((number 0))
 			      (setf number (logior
