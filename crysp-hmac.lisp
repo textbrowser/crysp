@@ -24,6 +24,9 @@
 ;; CRYSP, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 (defun crysp_hmac (block_length data key method)
+  (if (not (arrayp data)) (return-from crysp_hmac 'expecting-data-array))
+  (if (not (arrayp key)) (return-from crysp_hmac 'expecting-key-array))
+
   (let* ((array1 (make-array 0
 			     :adjustable t
 			     :element-type '(unsigned-byte 8)))
