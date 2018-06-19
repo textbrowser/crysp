@@ -148,6 +148,11 @@
 )
 
 (defun crysp_sha_512 (data)
+  (if (not (arrayp data))
+      (return-from crysp_sha_512 (make-array 8
+					     :element-type '(unsigned-byte)
+					     :initial-element 0)))
+
   (labels ((Ch (x y z)
 	       (logxor (logand x y) (logand (lognot x) z)))
 	   (Maj (x y z)
