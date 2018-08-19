@@ -32,6 +32,25 @@
 (defconstant IV6 #x1f83d9abfb41bd6b)
 (defconstant IV7 #x5be0cd19137e2179)
 
+(defun compress (chunk h is_last_block tt)
+  (let ((V (make-array 16
+		       :element-type '(unsigned-byte 64)
+		       :initial-element 0)))
+    (loop for i from 0 to 7 do
+	  (setf (aref V i) (aref h i)))
+    (setf (aref V 8) IV0)
+    (setf (aref V 9) IV1)
+    (setf (aref V 10) IV2)
+    (setf (aref V 11) IV3)
+    (setf (aref V 12) IV4)
+    (setf (aref V 13) IV5)
+    (setf (aref V 14) IV6)
+    (setf (aref V 15) IV7)
+    (setf (aref V 12) (logxor (aref V 12) (aref tt 0)))
+    (setf (aref V 13) (logxor (aref V 13) (aref tt 1)))
+    h)
+)
+
 (defun mix (Va Vb Vc Vd x y)
   (let ((V (make-array 4
 		       :element-type '(unsigned-byte 64)
