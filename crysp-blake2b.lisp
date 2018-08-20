@@ -48,7 +48,10 @@
     (setf (aref V 15) IV7)
     (setf (aref V 12) (logxor (aref V 12) (aref tt 0)))
     (setf (aref V 13) (logxor (aref V 13) (aref tt 1)))
-    (setf (aref V 14) (logxor (aref V 14) #xffffffffffffffff)))
+
+    (when is_last_block
+      (setf (aref V 14) (logxor (aref V 14) #xffffffffffffffff)))
+
     h)
 )
 
