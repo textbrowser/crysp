@@ -45,7 +45,16 @@
 				   (10 2 8 4 7 6 1 5 15 11 9 14 3 12 13 0))))
 
 (defun compress (chunk h is_last_block tt)
-  (let ((V (make-array 16
+  (let ((M (make-array 4
+		       :element-type '(unsigned-byte 64)
+		       :initial-element 0))
+	(S (make-array 16
+		       :element-type 'fixnum
+		       :initial-element 0))
+	(V (make-array 16
+		       :element-type '(unsigned-byte 64)
+		       :initial-element 0))
+	(h (make-array 16
 		       :element-type '(unsigned-byte 64)
 		       :initial-element 0))
 	(m (make-array 16
@@ -72,6 +81,17 @@
     (loop for i from 0 to 15 do
 	  (setf (aref m i) (aref chunk i)))
 
+    (loop for i from 0 to 11 do
+	  (loop for j from 0 to 15 do
+		(setf (aref S j) (aref SIGMA (mod i 10))))
+
+	  (setf M (mix (aref V 0) (aref V 4) (aref V 8) (aref V 12)
+		       (aref m (aref S 0)) (aref m (aref S1))))
+	  (setf (aref V 0) (aref M 0))
+	  (setf (aref V 4) (aref M 1))
+	  (setf (aref V 8) (aref M 2))
+	  (setf (aref V 12) (aref M 3)))
+
     h)
 )
 
@@ -80,11 +100,11 @@
 		       :element-type '(unsigned-byte 64)
 		       :initial-element 0)))
     (setf Va (+ Va Vb x))
-    (setf Vd (rotate_right (logxor Vd Va) 32))
+    (setf Vd (rotate_right (logxor Va Vd) 32))
     (setf Vc (+ Vc Vd))
     (setf Vb (rotate_right (logxor Vb Vc) 24))
     (setf Va (+ Va Vb y))
-    (setf Vd (rotate_right (logxor Vd Va) 16))
+    (setf Vd (rotate_right (logxor Va Vd) 16))
     (setf Vc (+ Vc Vd))
     (setf Vb (rotate_right (logxor Vb Vc) 63))
     (setf (aref V 0) (logand Va #xffffffffffffffff))
