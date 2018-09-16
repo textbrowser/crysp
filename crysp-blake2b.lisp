@@ -54,7 +54,7 @@
 	(V (make-array 16
 		       :element-type '(unsigned-byte 64)
 		       :initial-element 0))
-	(h (make-array 16
+	(h (make-array 8
 		       :element-type '(unsigned-byte 64)
 		       :initial-element 0))
 	(m (make-array 16
@@ -83,14 +83,62 @@
 
     (loop for i from 0 to 11 do
 	  (loop for j from 0 to 15 do
-		(setf (aref S j) (aref SIGMA (mod i 10))))
+		(setf (aref S j) (aref SIGMA (mod i 10) j)))
 
 	  (setf M (mix (aref V 0) (aref V 4) (aref V 8) (aref V 12)
-		       (aref m (aref S 0)) (aref m (aref S1))))
+		       (aref m (aref S 0)) (aref m (aref S 1))))
 	  (setf (aref V 0) (aref M 0))
 	  (setf (aref V 4) (aref M 1))
 	  (setf (aref V 8) (aref M 2))
-	  (setf (aref V 12) (aref M 3)))
+	  (setf (aref V 12) (aref M 3))
+    	  (setf M (mix (aref V 1) (aref V 5) (aref V 9) (aref V 13)
+		       (aref m (aref S 2)) (aref m (aref S 3))))
+	  (setf (aref V 1) (aref M 0))
+	  (setf (aref V 5) (aref M 1))
+	  (setf (aref V 9) (aref M 2))
+	  (setf (aref V 13) (aref M 3))
+	  (setf M (mix (aref V 2) (aref V 6) (aref V 10) (aref V 14)
+		       (aref m (aref S 4)) (aref m (aref S 5))))
+	  (setf (aref V 2) (aref M 0))
+	  (setf (aref V 6) (aref M 1))
+	  (setf (aref V 10) (aref M 2))
+	  (setf (aref V 14) (aref M 3))
+	  (setf M (mix (aref V 3) (aref V 7) (aref V 11) (aref V 15)
+		       (aref m (aref S 6)) (aref m (aref S 7))))
+	  (setf (aref V 3) (aref M 0))
+	  (setf (aref V 7) (aref M 1))
+	  (setf (aref V 11) (aref M 2))
+	  (setf (aref V 15) (aref M 3))
+	  (setf M (mix (aref V 0) (aref V 5) (aref V 10) (aref V 15)
+		       (aref m (aref S 8)) (aref m (aref S 9))))
+	  (setf (aref V 0) (aref M 0))
+	  (setf (aref V 5) (aref M 1))
+	  (setf (aref V 10) (aref M 2))
+	  (setf (aref V 15) (aref M 3))
+	  (setf M (mix (aref V 1) (aref V 6) (aref V 11) (aref V 12)
+		       (aref m (aref S 10)) (aref m (aref S 11))))
+	  (setf (aref V 1) (aref M 0))
+	  (setf (aref V 6) (aref M 1))
+	  (setf (aref V 11) (aref M 2))
+	  (setf (aref V 12) (aref M 3))
+	  (setf M (mix (aref V 2) (aref V 7) (aref V 8) (aref V 13)
+		       (aref m (aref S 12)) (aref m (aref S 13))))
+	  (setf (aref V 2) (aref M 0))
+	  (setf (aref V 7) (aref M 1))
+	  (setf (aref V 8) (aref M 2))
+	  (setf (aref V 13) (aref M 3))
+	  (setf M (mix (aref V 3) (aref V 4) (aref V 9) (aref V 14)
+		       (aref m (aref S 14)) (aref m (aref S 15))))
+	  (setf (aref V 3) (aref M 0))
+	  (setf (aref V 4) (aref M 1))
+	  (setf (aref V 9) (aref M 2))
+	  (setf (aref V 14) (aref M 3)))
+
+    (loop for i from 0 to 7 do
+	  (setf (aref h i) (logxor (aref V i) (aref h i))))
+
+    (loop for i from 0 to 7 do
+	  (setf (aref h i) (logxor (aref V (+ i 8)) (aref h i))))
 
     h)
 )
@@ -99,6 +147,7 @@
   (let ((V (make-array 4
 		       :element-type '(unsigned-byte 64)
 		       :initial-element 0)))
+
     (setf Va (+ Va Vb x))
     (setf Vd (rotate_right (logxor Va Vd) 32))
     (setf Vc (+ Vc Vd))
