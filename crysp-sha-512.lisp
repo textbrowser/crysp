@@ -23,6 +23,8 @@
 ;; (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 ;; CRYSP, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+;; Please read https://en.wikipedia.org/wiki/SHA-2 for implementation details.
+
 (defvar s_sha_512_h
   (make-array 8
 	      :element-type '(unsigned-byte 64)

@@ -23,6 +23,9 @@
 ;; (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 ;; CRYSP, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+;; Please read https://en.wikipedia.org/wiki/BLAKE_(hash_function)#BLAKE2
+;; for implementation details.
+
 (defconstant IV0 #x6a09e667f3bcc908)
 (defconstant IV1 #xbb67ae8584caa73b)
 (defconstant IV2 #x3c6ef372fe94f82b)

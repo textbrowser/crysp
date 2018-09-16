@@ -23,6 +23,8 @@
 ;; (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 ;; CRYSP, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+;; Please read https://en.wikipedia.org/wiki/HMAC for implementation details.
+
 (defun crysp_hmac (block_length data key method)
   (if (not (arrayp data)) (return-from crysp_hmac 'expecting-data-array))
   (if (not (arrayp key)) (return-from crysp_hmac 'expecting-key-array))
