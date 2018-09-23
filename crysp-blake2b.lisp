@@ -169,7 +169,21 @@
 		  (setf (aref V 3) (logand Vd #xffffffffffffffff))
 		  V))
 	   (rotate_right (x n)
-			 (logior (ash x (- n)) (ash x (- 64 n))))))
+			 (logior (ash x (- n)) (ash x (- 64 n)))))
+
+	  (let* ((h (make-array 0
+				:element-type '(unsigned-byte 8)))))
+
+	  ;; Initialize state vector h with IV.
+
+	  (setf (aref h 0) IV0)
+	  (setf (aref h 1) IV1)
+	  (setf (aref h 2) IV2)
+	  (setf (aref h 3) IV3)
+	  (setf (aref h 4) IV4)
+	  (setf (aref h 5) IV5)
+	  (setf (aref h 6) IV6)
+	  (setf (aref h 7) IV7))
 )
 
 (defun test1 ()
