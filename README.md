@@ -1,1 +1,1 @@
-Cute cryptographic Lisp.
+Cute cryptographic Lisp. Common Lisp is desired.

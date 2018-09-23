@@ -1,0 +1,14 @@
+HMAC
+
+clisp
+> (load "crysp-sha-512.lisp")
+> (load "crysp-hmac.lisp")
+> (test1)
+> (quit)
+
+SipHash
+
+clisp
+> (load "crysp-siphash.lisp")
+> (test1)
+> (quit)
