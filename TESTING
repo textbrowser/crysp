@@ -1,3 +1,10 @@
+Blake
+
+clisp
+> (load "crysp-blake2b.lisp")
+> (test1)
+> (quit)
+
 HMAC
 
 clisp
