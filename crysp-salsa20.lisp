@@ -23,13 +23,24 @@
 ;; (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 ;; CRYSP, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-(defun littleendian (data)
+(defun littleendian (bytes)
   (let ((number 0))
-    (setf number (+ (aref data 0)
-		    (ash (aref data 1) 8)
-		    (ash (aref data 2) 16)
-		    (ash (aref data 3) 24)))
+    (setf number (+ (aref bytes 0)
+		    (ash (aref bytes 1) 8)
+		    (ash (aref bytes 2) 16)
+		    (ash (aref bytes 3) 24)))
     number)
+)
+
+(defun littleendian_inverse (number)
+  (let ((bytes (make-array 4
+			  :element-type '(unsigned-byte 8)
+			  :initial-element 0)))
+    (setf (aref bytes 0) (logand number #xff))
+    (setf (aref bytes 1) (logand (ash number -8) #xff))
+    (setf (aref bytes 2) (logand (ash number -16) #xff))
+    (setf (aref bytes 3) (logand (ash number -24) #xff))
+    bytes)
 )
 
 (defun test1 ()
@@ -40,7 +51,8 @@
     (setf (aref data 1) 75)
     (setf (aref data 2) 30)
     (setf (aref data 3) 9)
-    (print (write-to-string (littleendian data) :base 16)))
+    (print (write-to-string (littleendian data) :base 16))
+    (print (write-to-string (littleendian_inverse (littleendian data)))))
   (let ((data (make-array 4
 			  :element-type '(unsigned-byte 8)
 			  :initial-element 0)))
@@ -48,5 +60,6 @@
     (setf (aref data 1) 255)
     (setf (aref data 2) 255)
     (setf (aref data 3) 250)
-    (print (write-to-string (littleendian data) :base 16)))
+    (print (write-to-string (littleendian data) :base 16))
+    (print (write-to-string (littleendian_inverse (littleendian data)))))    
 )
