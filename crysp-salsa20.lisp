@@ -29,6 +29,69 @@
     number)
 )
 
+(defun columnround (x)
+  (if (not (arrayp x))
+      (return-from columnround (make-array 16
+					   :element-type '(unsigned-byte 32)
+					   :initial-element 0)))
+
+  (let* ((temp (make-array 4
+			   :element-type '(unsigned-byte 32)
+			   :initial-element 0))
+	 (y (make-array 16
+			:element-type '(unsigned-byte 32)
+			:initial-element 0))
+	 (y1 (make-array 4
+			 :element-type '(unsigned-byte 32)
+			 :initial-element 0))
+	 (y2 (make-array 4
+			 :element-type '(unsigned-byte 32)
+			 :initial-element 0))
+	 (y3 (make-array 4
+			 :element-type '(unsigned-byte 32)
+			 :initial-element 0))
+	 (y4 (make-array 4
+			 :element-type '(unsigned-byte 32)
+			 :initial-element 0)))
+    (setf (aref temp 0) (aref x 0))
+    (setf (aref temp 1) (aref x 4))
+    (setf (aref temp 2) (aref x 8))
+    (setf (aref temp 3) (aref x 12))
+    (setq y1 (quarterround temp))
+    (setf (aref temp 0) (aref x 5))
+    (setf (aref temp 1) (aref x 9))
+    (setf (aref temp 2) (aref x 13))
+    (setf (aref temp 3) (aref x 1))
+    (setq y2 (quarterround temp))
+    (setf (aref temp 0) (aref x 10))
+    (setf (aref temp 1) (aref x 14))
+    (setf (aref temp 2) (aref x 2))
+    (setf (aref temp 3) (aref x 6))
+    (setq y3 (quarterround temp))
+    (setf (aref temp 0) (aref x 15))
+    (setf (aref temp 1) (aref x 3))
+    (setf (aref temp 2) (aref x 7))
+    (setf (aref temp 3) (aref x 11))
+    (setq y4 (quarterround temp))
+    (setf (aref y 0) (aref y1 0))
+    (setf (aref y 4) (aref y1 1))
+    (setf (aref y 8) (aref y1 2))
+    (setf (aref y 12) (aref y1 3))
+    (setf (aref y 5) (aref y2 0))
+    (setf (aref y 9) (aref y2 1))
+    (setf (aref y 13) (aref y2 2))
+    (setf (aref y 1) (aref y2 3))
+    (setf (aref y 10) (aref y3 0))
+    (setf (aref y 14) (aref y3 1))
+    (setf (aref y 2) (aref y3 2))
+    (setf (aref y 6) (aref y3 3))
+    (setf (aref y 15) (aref y4 0))
+    (setf (aref y 3) (aref y4 1))
+    (setf (aref y 7) (aref y4 2))
+    (setf (aref y 11) (aref y4 3))
+    y)
+)
+
 (defun littleendian (bytes)
   (if (not (arrayp bytes))
       (return-from littleendian 0))
@@ -148,6 +211,15 @@
 )
 
 (defun test1 ()
+    (let ((data (make-array 16
+			  :element-type '(unsigned-byte 32)
+			  :initial-element 0)))
+    (print 'columnround)
+    (setq data #(#x00000001 0 0 0
+		 #x00000001 0 0 0
+		 #x00000001 0 0 0
+		 #x00000001 0 0 0))
+    (print (write-to-string (columnround data) :base 16)))
   (let ((data (make-array 4
 			  :element-type '(unsigned-byte 8)
 			  :initial-element 0)))
