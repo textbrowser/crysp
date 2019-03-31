@@ -84,6 +84,69 @@
     z)
 )
 
+(defun rowround (y)
+  (if (not (arrayp y))
+      (return-from rowround (make-array 16
+					:element-type '(unsigned-byte 32)
+					:initial-element 0)))
+
+  (let* ((temp (make-array 4
+			   :element-type '(unsigned-byte 32)
+			   :initial-element 0))
+	 (z (make-array 16
+			:element-type '(unsigned-byte 32)
+			:initial-element 0))
+	 (z1 (make-array 4
+			 :element-type '(unsigned-byte 32)
+			 :initial-element 0))
+	 (z2 (make-array 4
+			 :element-type '(unsigned-byte 32)
+			 :initial-element 0))
+	 (z3 (make-array 4
+			 :element-type '(unsigned-byte 32)
+			 :initial-element 0))
+	 (z4 (make-array 4
+			 :element-type '(unsigned-byte 32)
+			 :initial-element 0)))
+    (setf (aref temp 0) (aref y 0))
+    (setf (aref temp 1) (aref y 1))
+    (setf (aref temp 2) (aref y 2))
+    (setf (aref temp 3) (aref y 3))
+    (setq z1 (quarterround temp))
+    (setf (aref temp 0) (aref y 5))
+    (setf (aref temp 1) (aref y 6))
+    (setf (aref temp 2) (aref y 7))
+    (setf (aref temp 3) (aref y 4))
+    (setq z2 (quarterround temp))
+    (setf (aref temp 0) (aref y 10))
+    (setf (aref temp 1) (aref y 11))
+    (setf (aref temp 2) (aref y 8))
+    (setf (aref temp 3) (aref y 9))
+    (setq z3 (quarterround temp))
+    (setf (aref temp 0) (aref y 15))
+    (setf (aref temp 1) (aref y 12))
+    (setf (aref temp 2) (aref y 13))
+    (setf (aref temp 3) (aref y 14))
+    (setq z4 (quarterround temp))
+    (setf (aref z 0) (aref z1 0))
+    (setf (aref z 1) (aref z1 1))
+    (setf (aref z 2) (aref z1 2))
+    (setf (aref z 3) (aref z1 3))
+    (setf (aref z 5) (aref z2 0))
+    (setf (aref z 6) (aref z2 1))
+    (setf (aref z 7) (aref z2 2))
+    (setf (aref z 4) (aref z2 3))
+    (setf (aref z 10) (aref z3 0))
+    (setf (aref z 11) (aref z3 1))
+    (setf (aref z 8) (aref z3 2))
+    (setf (aref z 9) (aref z3 3))
+    (setf (aref z 15) (aref z4 0))
+    (setf (aref z 12) (aref z4 1))
+    (setf (aref z 13) (aref z4 2))
+    (setf (aref z 14) (aref z4 3))
+    z)
+)
+
 (defun test1 ()
   (let ((data (make-array 4
 			  :element-type '(unsigned-byte 8)
@@ -142,5 +205,14 @@
     (setf (aref data 2) #x52a58a7a)
     (setf (aref data 3) #x8f887a3b)
     (print (write-to-string (quarterround data) :base 16)))
+  (let ((data (make-array 16
+			  :element-type '(unsigned-byte 32)
+			  :initial-element 0)))
+    (print 'rowround)
+    (setq data #(#x00000001 0 0 0
+		 #x00000001 0 0 0
+		 #x00000001 0 0 0
+		 #x00000001 0 0 0))
+    (print (write-to-string (rowround data) :base 16)))
   nil
 )
