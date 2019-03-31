@@ -92,6 +92,15 @@
     y)
 )
 
+(defun doubleround (x)
+  (if (not (arrayp x))
+      (return-from doubleround (make-array 16
+					   :element-type '(unsigned-byte 32)
+					   :initial-element 0)))
+
+  (rowround (columnround x))
+)
+
 (defun littleendian (bytes)
   (if (not (arrayp bytes))
       (return-from littleendian 0))
@@ -211,7 +220,7 @@
 )
 
 (defun test1 ()
-    (let ((data (make-array 16
+  (let ((data (make-array 16
 			  :element-type '(unsigned-byte 32)
 			  :initial-element 0)))
     (print 'columnround)
@@ -219,7 +228,10 @@
 		 #x00000001 0 0 0
 		 #x00000001 0 0 0
 		 #x00000001 0 0 0))
-    (print (write-to-string (columnround data) :base 16)))
+    (print (write-to-string (columnround data) :base 16))
+    (print 'doubleround)
+    (setq data #(#x00000001 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0))
+    (print (write-to-string (doubleround data) :base 16)))
   (let ((data (make-array 4
 			  :element-type '(unsigned-byte 8)
 			  :initial-element 0)))
