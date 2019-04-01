@@ -1,16 +1,17 @@
-Blake
-
-clisp
-> (load "crysp-blake2b.lisp")
-> (test1)
-> (quit)
-
 HMAC
 
 clisp
 > (load "crysp-sha-512.lisp")
 > (load "crysp-hmac.lisp")
 > (test1)
+> (quit)
+
+Salsa20 Hash
+
+clisp
+> (load "crystp-salsa20-hash.lisp")
+> (test1)
+> (test2)
 > (quit)
 
 SipHash
