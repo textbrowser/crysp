@@ -92,6 +92,96 @@
     y)
 )
 
+(defun crysp_salsa20_hash (x)
+  (if (not (arrayp x))
+      (return-from crysp_salsa20_hash
+		   (make-array 64
+			       :element-type '(unsigned-byte 32)
+			       :initial-element 0)))
+
+  (let ((xarray (make-array 16
+			    :element-type '(unsigned-byte 32)
+			    :initial-element 0))
+	(z (make-array 16
+		       :element-type '(unsigned-byte 32)
+		       :initial-element 0)))
+    (setf (aref xarray 0) (littleendian (subseq x 0 4)))
+    (setf (aref xarray 1) (littleendian (subseq x 4 8)))
+    (setf (aref xarray 2) (littleendian (subseq x 8 12)))
+    (setf (aref xarray 3) (littleendian (subseq x 12 16)))
+    (setf (aref xarray 4) (littleendian (subseq x 16 20)))
+    (setf (aref xarray 5) (littleendian (subseq x 20 24)))
+    (setf (aref xarray 6) (littleendian (subseq x 24 28)))
+    (setf (aref xarray 7) (littleendian (subseq x 28 32)))
+    (setf (aref xarray 8) (littleendian (subseq x 32 36)))
+    (setf (aref xarray 9) (littleendian (subseq x 36 40)))
+    (setf (aref xarray 10) (littleendian (subseq x 40 44)))
+    (setf (aref xarray 11) (littleendian (subseq x 44 48)))
+    (setf (aref xarray 12) (littleendian (subseq x 48 52)))
+    (setf (aref xarray 13) (littleendian (subseq x 52 56)))
+    (setf (aref xarray 14) (littleendian (subseq x 56 60)))
+    (setf (aref xarray 15) (littleendian (subseq x 60 64)))
+    (setq z (doubleround xarray))
+    (setq z (doubleround z))
+    (setq z (doubleround z))
+    (setq z (doubleround z))
+    (setq z (doubleround z))
+    (setq z (doubleround z))
+    (setq z (doubleround z))
+    (setq z (doubleround z))
+    (setq z (doubleround z))
+    (setq z (doubleround z))
+    (concatenate 'array
+		 (littleendian_inverse (logand (+ (aref z 0)
+						  (aref xarray 0))
+					       #xffffffff))
+		 (littleendian_inverse (logand (+ (aref z 1)
+						  (aref xarray 1))
+					       #xffffffff))
+		 (littleendian_inverse (logand (+ (aref z 2)
+						  (aref xarray 2))
+					       #xffffffff))
+		 (littleendian_inverse (logand (+ (aref z 3)
+						  (aref xarray 3))
+					       #xffffffff))
+		 (littleendian_inverse (logand (+ (aref z 4)
+						  (aref xarray 4))
+					       #xffffffff))
+		 (littleendian_inverse (logand (+ (aref z 5)
+						  (aref xarray 5))
+					       #xffffffff))
+		 (littleendian_inverse (logand (+ (aref z 6)
+						  (aref xarray 6))
+					       #xffffffff))
+		 (littleendian_inverse (logand (+ (aref z 7)
+						  (aref xarray 7))
+					       #xffffffff))
+		 (littleendian_inverse (logand (+ (aref z 8)
+						  (aref xarray 8))
+					       #xffffffff))
+		 (littleendian_inverse (logand (+ (aref z 9)
+						  (aref xarray 9))
+					       #xffffffff))
+		 (littleendian_inverse (logand (+ (aref z 10)
+						  (aref xarray 10))
+					       #xffffffff))
+		 (littleendian_inverse (logand (+ (aref z 11)
+						  (aref xarray 11))
+					       #xffffffff))
+		 (littleendian_inverse (logand (+ (aref z 12)
+						  (aref xarray 12))
+					       #xffffffff))
+		 (littleendian_inverse (logand (+ (aref z 13)
+						  (aref xarray 13))
+					       #xffffffff))
+		 (littleendian_inverse (logand (+ (aref z 14)
+						  (aref xarray 14))
+					       #xffffffff))
+		 (littleendian_inverse (logand (+ (aref z 15)
+						  (aref xarray 15))
+					       #xffffffff))))
+)
+
 (defun doubleround (x)
   (if (not (arrayp x))
       (return-from doubleround (make-array 16
@@ -298,5 +388,28 @@
 		 #x00000001 0 0 0
 		 #x00000001 0 0 0))
     (print (write-to-string (rowround data) :base 16)))
+  nil
+)
+
+(defun test2 ()
+  (let ((data (make-array 64
+			  :element-type '(unsigned-byte 32)
+			  :initial-element 0)))
+    (print 'crysp_salsa20_hash)
+    (setq data #(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+		 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+		 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+		 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0))
+    (print (crysp_salsa20_hash data))
+    (setq data #(211 159 13 115 76 55 82 183 3 117 222 37 191 187 234 136
+		 49 237 179 48 1 106 178 219 175 199 166 48 86 16 179 207
+		 31 240 32 63 15 83 93 161 116 147 48 113 238 55 204 36
+		 79 201 235 79 3 81 156 47 203 26 244 243 88 118 104 54))
+    (print (crysp_salsa20_hash data))
+    (setq data #(88 118 104 54 79 201 235 79 3 81 156 47 203 26 244 243
+		 191 187 234 136 211 159 13 115 76 55 82 183 3 117 222 37
+		 86 16 179 207 49 237 179 48 1 106 178 219 175 199 166 48
+		 238 55 204 36 31 240 32 63 15 83 93 161 116 147 48 113))
+    (print (crysp_salsa20_hash data)))
   nil
 )
