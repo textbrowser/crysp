@@ -76,7 +76,7 @@
 )
 
 (defun test1 ()
-  (print "3926a207c8c42b0c41792cbd3e1a1aaaf5f7a25704f62dfc939c4987dd7ce060009c5bb1c2447355b3216f10b537e9afa7b64a4e5391b0d631172d07939e087a")
+  (print "3926a207c8c42b0c 41792cbd3e1a1aaa f5f7a25704f62dfc 939c4987dd7ce060 9c5bb1c2447355 b3216f10b537e9af a7b64a4e5391b0d6 31172d07939e087a")
   (print (write-to-string
 	  (crysp_hmac 128
 		      (make-array 3

@@ -250,7 +250,8 @@
 			  (logand (+ (sb1_512 (aref W (- tt 2)))
 				     (aref W (- tt 7))
 				     (sb0_512 (aref W (- tt 15)))
-				     (aref W (- tt 16))) #xffffffffffffffff)))
+				     (aref W (- tt 16)))
+				  #xffffffffffffffff)))
 
 	      (setf a (aref HH 0))
 	      (setf b (aref HH 1))
