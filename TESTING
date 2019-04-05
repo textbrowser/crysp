@@ -6,10 +6,18 @@ clisp
 > (test1)
 > (quit)
 
+Salsa20 Cipher
+
+clisp
+> (load "crysp-salsa20-hash.lisp")
+> (load "crysp-salsa20-cipher.lisp")
+> (test1)
+> (quit)
+
 Salsa20 Hash
 
 clisp
-> (load "crystp-salsa20-hash.lisp")
+> (load "crysp-salsa20-hash.lisp")
 > (test1)
 > (test2)
 > (quit)

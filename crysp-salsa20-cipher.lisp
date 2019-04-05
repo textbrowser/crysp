@@ -63,6 +63,34 @@
 	      :element-type '(unsigned-byte 32)
 	      :initial-contents '(116 101 32 107)))
 
+(defun crysp_salsa_cipher_encrypt (data key v)
+  (if (not (and (arrayp data) (arrayp key) (arrayp v)))
+      (return-from
+       crysp_salsa_cipher_encrypt (make-array 1
+					      :element-type '(unsigned-byte 32)
+					      :initial-element 0)))
+
+  (let ((c (make-array (array-total-size data)
+		       :element-type '(unsigned-byte 32)
+		       :initial-element 0)))
+
+    (loop for i from 0 to (- (array-total-size c) 1) do
+	  (setq a (concatenate 'array
+			       v
+			       (littleendian_inverse (floor i 64))
+			       #(0 0 0 0)))
+	  (setq s (crysp_salsa20_hash (concatenate 'array
+						   s_sigma_0
+						   (subseq key 0 16)
+						   s_sigma_1
+						   a
+						   s_sigma_2
+						   (subseq key 16 32)
+						   s_sigma_3)))
+	  (setf (aref c i) (logxor (aref data i) (aref s (mod i 64)))))
+    c)
+)
+
 (defun test1 ()
   (setq k_0 #(1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16))
   (setq k_1 #(201 202 203 204 205 206 207 208 209 210 211 212 213 214 215 216))
@@ -80,4 +108,13 @@
 					   k_1
 					   s_sigma_3))
 	  result)
+)
+
+(defun test2 ()
+  (setq data (make-array 512
+			 :element-type '(unsigned-byte 32)
+			 :initial-element 0))
+  (setq k #(128 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0))
+  (setq v #(0 0 0 0 0 0 0 0))
+  (print (write-to-string (crysp_salsa_cipher_encrypt data k v) :base 16))
 )
