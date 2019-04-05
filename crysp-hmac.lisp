@@ -57,7 +57,7 @@
 	(let ((array (make-array (- block_length (array-total-size k))
 				 :element-type '(unsigned-byte 8)
 				 :initial-element 0)))
-	  (setq k (concatenate 'vector k array))))
+	  (setq k (concatenate 'array k array))))
 
     (dotimes (i block_length)
       (setf (aref left i) (logxor (aref k i) (aref opad i))))
@@ -65,12 +65,12 @@
     (dotimes (i block_length)
       (setf (aref right i) (logxor (aref k i) (aref ipad i))))
 
-    (setf array1 (funcall method (concatenate 'vector right data)))
+    (setf array1 (funcall method (concatenate 'array right data)))
     (setf array2 left)
 
     (dotimes (i (array-total-size array1))
       (setf array2
-	    (concatenate 'vector array2 (number_to_bytes (aref array1 i)))))
+	    (concatenate 'array array2 (number_to_bytes (aref array1 i)))))
 
     (funcall method array2))
 )
