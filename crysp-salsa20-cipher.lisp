@@ -23,5 +23,25 @@
 ;; (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 ;; CRYSP, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+(defvar s_sigma_0
+  (make-array 4
+	      :element-type '(unsigned-byte 32)
+	      :initial-contents '(101, 120, 112, 97)))
+
+(defvar s_sigma_1
+  (make-array 4
+	      :element-type '(unsigned-byte 32)
+	      :initial-contents '(110, 100, 32, 51)))
+
+(defvar s_sigma_2
+  (make-array 4
+	      :element-type '(unsigned-byte 32)
+	      :initial-contents '(50, 45, 98, 121)))
+
+(defvar s_sigma_3
+  (make-array 4
+	      :element-type '(unsigned-byte 32)
+	      :initial-contents '(116, 101, 32, 107)))
+
 (defun test1 ()
 )
