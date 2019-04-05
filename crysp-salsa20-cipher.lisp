@@ -26,22 +26,58 @@
 (defvar s_sigma_0
   (make-array 4
 	      :element-type '(unsigned-byte 32)
-	      :initial-contents '(101, 120, 112, 97)))
+	      :initial-contents '(101 120 112 97)))
 
 (defvar s_sigma_1
   (make-array 4
 	      :element-type '(unsigned-byte 32)
-	      :initial-contents '(110, 100, 32, 51)))
+	      :initial-contents '(110 100 32 51)))
 
 (defvar s_sigma_2
   (make-array 4
 	      :element-type '(unsigned-byte 32)
-	      :initial-contents '(50, 45, 98, 121)))
+	      :initial-contents '(50 45 98 121)))
 
 (defvar s_sigma_3
   (make-array 4
 	      :element-type '(unsigned-byte 32)
-	      :initial-contents '(116, 101, 32, 107)))
+	      :initial-contents '(116 101 32 107)))
+
+(defvar s_tau_0
+  (make-array 4
+	      :element-type '(unsigned-byte 32)
+	      :initial-contents '(101 120 112 97)))
+
+(defvar s_tau_1
+  (make-array 4
+	      :element-type '(unsigned-byte 32)
+	      :initial-contents '(110 100 32 49)))
+
+(defvar s_tau_2
+  (make-array 4
+	      :element-type '(unsigned-byte 32)
+	      :initial-contents '(54 45 98 121)))
+
+(defvar s_tau_3
+  (make-array 4
+	      :element-type '(unsigned-byte 32)
+	      :initial-contents '(116 101 32 107)))
 
 (defun test1 ()
+  (setq k_0 #(1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16))
+  (setq k_1 #(201 202 203 204 205 206 207 208 209 210 211 212 213 214 215 216))
+  (setq n #(101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116))
+  (setq result #(69 37 68 39 41 15 107 193 255 139 122 6 170 233 217 98
+		 89 144 182 106 21 51 200 65 239 49 222 34 215 114 40 126
+		 104 197 7 225 197 153 31 2 102 78 76 176 84 245 246 184
+		 177 160 133 130 6 72 149 119 192 195 132 236 234 103 246 74))
+  (equalp (crysp_salsa20_hash (concatenate 'array
+					   s_sigma_0
+					   k_0
+					   s_sigma_1
+					   n
+					   s_sigma_2
+					   k_1
+					   s_sigma_3))
+	  result)
 )
