@@ -98,7 +98,7 @@
     c)
 )
 
-(defun test1 ()
+(defun test3 ()
   (setq k_0 #(1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16))
   (setq k_1 #(201 202 203 204 205 206 207 208 209 210 211 212 213 214 215 216))
   (setq n #(101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116))
@@ -117,7 +117,7 @@
 	  result)
 )
 
-(defun test2 ()
+(defun test4 ()
   (setq data (make-array 512
 			 :element-type '(unsigned-byte 32)
 			 :initial-element 0))

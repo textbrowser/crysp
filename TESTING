@@ -11,7 +11,8 @@ Salsa20 Cipher
 clisp
 > (load "crysp-salsa20-hash.lisp")
 > (load "crysp-salsa20-cipher.lisp")
-> (test1)
+> (test3)
+> (test4)
 > (quit)
 
 Salsa20 Hash
