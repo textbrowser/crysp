@@ -396,10 +396,6 @@
 			  :element-type '(unsigned-byte 32)
 			  :initial-element 0)))
     (print 'crysp_salsa20_hash)
-    (setq data #(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-		 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-		 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-		 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0))
     (print (crysp_salsa20_hash data))
     (setq data #(211 159 13 115 76 55 82 183 3 117 222 37 191 187 234 136
 		 49 237 179 48 1 106 178 219 175 199 166 48 86 16 179 207
