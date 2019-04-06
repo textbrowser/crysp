@@ -63,14 +63,21 @@
 	      :element-type '(unsigned-byte 32)
 	      :initial-contents '(116 101 32 107)))
 
-(defun crysp_salsa_cipher_encrypt (data key v)
+(defun crysp_salsa20_cipher_encrypt (data key v)
   (if (not (and (arrayp data) (arrayp key) (arrayp v)))
       (return-from
-       crysp_salsa_cipher_encrypt (make-array 1
-					      :element-type '(unsigned-byte 32)
-					      :initial-element 0)))
+       crysp_salsa20_cipher_encrypt
+       (make-array 1
+		   :element-type '(unsigned-byte 32)
+		   :initial-element 0)))
 
-  (let ((c (make-array (array-total-size data)
+  (let ((a (make-array 16
+		       :element-type '(unsigned-byte 32)
+		       :initial-element 0))
+	(c (make-array (array-total-size data)
+		       :element-type '(unsigned-byte 32)
+		       :initial-element 0))
+	(s (make-array 64
 		       :element-type '(unsigned-byte 32)
 		       :initial-element 0)))
 
@@ -116,5 +123,5 @@
 			 :initial-element 0))
   (setq k #(128 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0))
   (setq v #(0 0 0 0 0 0 0 0))
-  (print (write-to-string (crysp_salsa_cipher_encrypt data k v) :base 16))
+  (print (write-to-string (crysp_salsa20_cipher_encrypt data k v) :base 16))
 )
