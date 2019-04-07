@@ -121,7 +121,7 @@
     (setf (aref xarray 13) (littleendian (subseq x 52 56)))
     (setf (aref xarray 14) (littleendian (subseq x 56 60)))
     (setf (aref xarray 15) (littleendian (subseq x 60 64)))
-    (setq z (doubleround xarray))
+    (setq z (doubleround xarray)) ;; Inefficient.
     (setq z (doubleround z))
     (setq z (doubleround z))
     (setq z (doubleround z))
