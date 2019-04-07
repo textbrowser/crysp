@@ -24,9 +24,7 @@
 ;; CRYSP, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 (defun cbitleftrotation (u c)
-  (let ((number 0))
-    (setf number (logand (logior (ash u c) (ash u (- (- 32 c)))) #xffffffff))
-    number)
+  (logand (logior (ash u c) (ash u (- (- 32 c)))) #xffffffff)
 )
 
 (defun columnround (x)
@@ -195,12 +193,10 @@
   (if (not (arrayp bytes))
       (return-from littleendian 0))
 
-  (let ((number 0))
-    (setf number (+ (aref bytes 0)
-		    (ash (aref bytes 1) 8)
-		    (ash (aref bytes 2) 16)
-		    (ash (aref bytes 3) 24)))
-    number)
+  (+ (aref bytes 0)
+     (ash (aref bytes 1) 8)
+     (ash (aref bytes 2) 16)
+     (ash (aref bytes 3) 24))
 )
 
 (defun littleendian_inverse (number)
