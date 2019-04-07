@@ -66,10 +66,9 @@
 (defun crysp_salsa20_cipher (data key v)
   (if (not (and (arrayp data) (arrayp key) (arrayp v)))
       (return-from
-       crysp_salsa20_cipher_encrypt
-       (make-array 1
-		   :element-type '(unsigned-byte 32)
-		   :initial-element 0)))
+       crysp_salsa20_cipher (make-array 1
+					:element-type '(unsigned-byte 32)
+					:initial-element 0)))
 
   (let ((a (make-array 16
 		       :element-type '(unsigned-byte 32)
