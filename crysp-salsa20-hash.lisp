@@ -24,10 +24,14 @@
 ;; CRYSP, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 (defun cbitleftrotation (u c)
+  (declare (type (unsigned-byte 32) c u))
+
   (logand (logior (ash u c) (ash u (- (- 32 c)))) #xffffffff)
 )
 
 (defun columnround (x)
+  (declare (type (array (unsigned-byte 32) 16) x))
+
   (if (not (arrayp x))
       (return-from columnround (make-array 16
 					   :element-type '(unsigned-byte 32)
@@ -91,6 +95,8 @@
 )
 
 (defun crysp_salsa20_hash (x)
+  (declare (type (array (unsigned-byte 32) 64) x))
+
   (if (not (arrayp x))
       (return-from crysp_salsa20_hash
 		   (make-array 64
@@ -190,6 +196,8 @@
 )
 
 (defun littleendian (bytes)
+  (declare (type (array (unsigned-byte 32) 4) bytes))
+
   (if (not (arrayp bytes))
       (return-from littleendian 0))
 
@@ -200,8 +208,10 @@
 )
 
 (defun littleendian_inverse (number)
+  (declare (type (unsigned-byte 32) number))
+
   (let ((bytes (make-array 4
-			   :element-type '(unsigned-byte 8)
+			   :element-type '(unsigned-byte 32)
 			   :initial-element 0)))
     (setf (aref bytes 0) (logand number #xff))
     (setf (aref bytes 1) (logand (ash number -8) #xff))
@@ -211,6 +221,8 @@
 )
 
 (defun quarterround (y)
+  (declare (type (array (unsigned-byte 32) 4) y))
+
   (if (not (arrayp y))
       (return-from quarterround (make-array 4
 					    :element-type '(unsigned-byte 32)
@@ -243,6 +255,8 @@
 )
 
 (defun rowround (y)
+  (declare (type (array (unsigned-byte 32) 16) y))
+
   (if (not (arrayp y))
       (return-from rowround (make-array 16
 					:element-type '(unsigned-byte 32)
@@ -319,7 +333,7 @@
     (setq data #(#x00000001 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0))
     (print (write-to-string (doubleround data) :base 16)))
   (let ((data (make-array 4
-			  :element-type '(unsigned-byte 8)
+			  :element-type '(unsigned-byte 32)
 			  :initial-element 0)))
     (setf (aref data 0) 86)
     (setf (aref data 1) 75)
@@ -330,7 +344,7 @@
     (print 'littleendian_inverse)
     (print (write-to-string (littleendian_inverse (littleendian data)))))
   (let ((data (make-array 4
-			  :element-type '(unsigned-byte 8)
+			  :element-type '(unsigned-byte 32)
 			  :initial-element 0)))
     (setf (aref data 0) 255)
     (setf (aref data 1) 255)
