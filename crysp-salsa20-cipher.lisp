@@ -70,13 +70,7 @@
 					:element-type '(unsigned-byte 32)
 					:initial-element 0)))
 
-  (let ((a (make-array 16
-		       :element-type '(unsigned-byte 32)
-		       :initial-element 0))
-	(c (make-array (array-total-size data)
-		       :element-type '(unsigned-byte 32)
-		       :initial-element 0))
-	(s (make-array 64
+  (let ((c (make-array (array-total-size data)
 		       :element-type '(unsigned-byte 32)
 		       :initial-element 0)))
 
