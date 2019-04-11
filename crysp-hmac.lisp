@@ -88,3 +88,23 @@
 		      'crysp_sha_512) :base 16))
   nil
 )
+
+(defun test2 ()
+  (make-array 250000
+	      :element-type '(unsigned-byte 8)
+	      :initial-element 0)
+  nil
+)
+
+(defun test3 ()
+  (print (write-to-string
+	  (crysp_hmac 128
+		      (make-array 250000
+				  :element-type '(unsigned-byte 8)
+				  :initial-element 0)
+		      (make-array 64
+				  :element-type '(unsigned-byte 8)
+				  :initial-element 0)
+		      'crysp_sha_512) :base 16))
+  nil
+)
