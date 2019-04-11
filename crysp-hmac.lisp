@@ -97,6 +97,10 @@
 )
 
 (defun test3 ()
+  (compile 'bytes_to_number)
+  (compile 'crysp_hmac)
+  (compile 'crysp_sha_512)
+  (compile 'number_to_bytes)
   (print (write-to-string
 	  (crysp_hmac 128
 		      (make-array 250000
