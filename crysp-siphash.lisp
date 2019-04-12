@@ -172,3 +172,16 @@
 
     (print (write-to-string (crysp_siphash 0 0 data key) :base 16)))
 )
+
+(defun test2 ()
+  (compile 'crysp_siphash)
+  (let ((data (make-array 250000
+			  :element-type '(unsigned-byte 8)
+			  :initial-element 0))
+	(key (make-array 16 :element-type '(unsigned-byte 8))))
+
+    (loop for i from 0 to (1- (array-total-size key)) do
+	  (setf (aref key i) i))
+
+    (print (write-to-string (crysp_siphash 0 0 data key) :base 16)))
+)
