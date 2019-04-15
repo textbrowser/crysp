@@ -22,8 +22,9 @@
 ;; THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 ;; (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 ;; CRYSP, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-(defvar s_tiger
-  (make-array 1024
+
+(defvar s_table_1
+  (make-array 256
 	      :element-type '(unsigned-byte 64)
 	      :initial-contents '(#x02aab17cf7e90c5e
 				  #xac424b03e243a8ec
@@ -280,8 +281,12 @@
 				  #xffed95d8f1ea02a2
 				  #xe72b3bd61464d43d
 				  #xa6300f170bdc4820
-				  #xebc18760ed78a77a
-				  #xe6a6be5a05a12138
+				  #xebc18760ed78a77a)))
+
+(defvar s_table_2
+  (make-array 256
+	      :element-type '(unsigned-byte 64)
+	      :initial-contents '(#xe6a6be5a05a12138
 				  #xb5a122a5b4f87c98
 				  #x563c6089140b6990
 				  #x4c46cb2e391f5dd5
@@ -536,8 +541,12 @@
 				  #x9010a91e84711ae9
 				  #x4df7f0b7b1498371
 				  #xd62a2eabc0977179
-				  #x22fac097aa8d5c0e
-				  #xf49fcc2ff1daf39b
+				  #x22fac097aa8d5c0e)))
+
+(defvar s_table_3
+  (make-array 256
+	      :element-type '(unsigned-byte 64)
+	      :initial-contents '(#xf49fcc2ff1daf39b
 				  #x487fd5c66ff29281
 				  #xe8a30667fcdca83f
 				  #x2c9b4be3d2fcce63
@@ -792,8 +801,12 @@
 				  #x454c6fe9f2c0c1cd
 				  #x419cf6496412691c
 				  #xd3dc3bef265b0f70
-				  #x6d0e60f5c3578a9e
-				  #x5b0e608526323c55
+				  #x6d0e60f5c3578a9e)))
+
+(defvar s_table_4
+  (make-array 256
+	      :element-type '(unsigned-byte 64)
+	      :initial-contents '(#x5b0e608526323c55
 				  #x1a46c1a9fa1b59f5
 				  #xa9e245a17c4c8ffa
 				  #x65ca5159db2955d7
@@ -1049,3 +1062,12 @@
 				  #xc12591d7535f5065
 				  #xc83223f1720aef96
 				  #xc3a0396f7363a51f)))
+
+(defun tiger_round (a b c x mul)
+  (let ((bytes (make-array 3
+			   :element-type '(unsigned-byte 64)
+			   :initial-element 0)))
+    (setf (aref bytes 2) (logior c x))
+    (setf (aref bytes 1) (* b mul))
+    bytes)
+)
