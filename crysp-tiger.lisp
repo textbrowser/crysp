@@ -1152,6 +1152,16 @@
     bytes)
 )
 
+(defun save_abc (a b c)
+  (let ((bytes (make-array 3
+			   :element-type '(unsigned-byte 64)
+			   :initial-element 0)))
+    (setf (aref bytes 0) a)
+    (setf (aref bytes 1) b)
+    (setf (aref bytes 2) c)
+    bytes)
+)
+
 (defun tiger_round (a b c x mul)
   (let ((aa a)
 	(bb b)
