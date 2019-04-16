@@ -1063,10 +1063,20 @@
 				  #xc83223f1720aef96
 				  #xc3a0396f7363a51f)))
 
+(defun feedforward (a aa b bb c cc)
+  (let ((bytes (make-array 3
+			   :element-type '(unsigned-byte 64)
+			   :initial-element 0)))
+    (setf (aref bytes 0) (logior a aa))
+    (setf (aref bytes 1) (- b bb))
+    (setf (aref bytes 2) (+ c cc))
+    bytes)
+)
+
 (defun key_schedule (x)
   (if (not (arrayp x))
       (return-from crysp_sha_512 (make-array 8
-					     :element-type '(unsigned-byte)
+					     :element-type '(unsigned-byte 64)
 					     :initial-element 0)))
   (setf (aref x 0) (- (aref x 0) (logior (aref x 7) #xa5a5a5a5a5a5a5a5)))
   (setf (aref x 1) (logior (aref x 0) (aref x 1)))
@@ -1090,7 +1100,7 @@
 (defun pass (a b c mul x)
   (if (not (arrayp x))
       (return-from crysp_sha_512 (make-array 3
-					     :element-type '(unsigned-byte)
+					     :element-type '(unsigned-byte 64)
 					     :initial-element 0)))
 
   (let ((bytes (make-array 3)
