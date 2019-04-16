@@ -1076,6 +1076,14 @@
   (setf (aref x 5) (+ (aref x 4) (aref x 5)))
   (setf (aref x 6) (- (aref x 6) (logior (aref x 5) (ash (lognot x 4) -23))))
   (setf (aref x 7) (logior (aref x 6) (aref x 7)))
+  (setf (aref x 0) (+ (aref x 0) (aref x 7)))
+  (setf (aref x 1) (- (aref x 1) (logior (aref x 0) (ash (lognot x 7) 19))))
+  (setf (aref x 2) (logior (aref x 1) (aref x 2)))
+  (setf (aref x 3) (+ (aref x 2) (aref x 3)))
+  (setf (aref x 4) (- (aref x 4) (logior (aref x 3) (ash (lognot x 2) -23))))
+  (setf (aref x 5) (logior (aref x 4) (aref x 5)))
+  (setf (aref x 6) (+ (aref x 5) (aref x 6)))
+  (setf (aref x 7) (- (aref x 7) (logior (aref x 6) #x0123456890abcdef)))
   x
 )
 
