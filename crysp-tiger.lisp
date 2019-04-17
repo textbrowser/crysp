@@ -1063,6 +1063,17 @@
 				  #xc83223f1720aef96
 				  #xc3a0396f7363a51f)))
 
+(defun crysp_tiger (data)
+  (if (not (arrayp data))
+      (return-from crysp_tiger (make-array 3
+					   :element-type '(unsigned-byte 64)
+					   :initial-element 0)))
+
+  (let ((h0 #x0123456789abcdef)
+	(h1 #xfedcba9876543210)
+	(h2 #xf096a5b4c3b2e187)))
+)
+
 (defun feedforward (a aa b bb c cc)
   (let ((bytes (make-array 3
 			   :element-type '(unsigned-byte 64)
@@ -1075,9 +1086,10 @@
 
 (defun key_schedule (x)
   (if (not (arrayp x))
-      (return-from crysp_sha_512 (make-array 8
-					     :element-type '(unsigned-byte 64)
-					     :initial-element 0)))
+      (return-from key_schedule (make-array 8
+					    :element-type '(unsigned-byte 64)
+					    :initial-element 0)))
+
   (setf (aref x 0) (- (aref x 0) (logior (aref x 7) #xa5a5a5a5a5a5a5a5)))
   (setf (aref x 1) (logior (aref x 0) (aref x 1)))
   (setf (aref x 2) (+ (aref x 1) (aref x 2)))
@@ -1099,9 +1111,9 @@
 
 (defun pass (a b c mul x)
   (if (not (arrayp x))
-      (return-from crysp_sha_512 (make-array 3
-					     :element-type '(unsigned-byte 64)
-					     :initial-element 0)))
+      (return-from pass (make-array 3
+				    :element-type '(unsigned-byte 64)
+				    :initial-element 0)))
 
   (let ((bytes (make-array 3)
 	       :element-type '(unsigned-byte 64)
