@@ -29,3 +29,10 @@ clisp
 > (load "crysp-siphash.lisp")
 > (test1)
 > (quit)
+
+Tiger
+
+clisp
+> (load "crysp-tiger.lisp")
+> (test1)
+> (quit)
