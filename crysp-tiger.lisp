@@ -1164,6 +1164,16 @@
     bytes)
 )
 
+(defun process_block (block h0 h1 h2)
+  (let ((a h0)
+	(b h1)
+	(c h2)
+	(h (make-array 3
+		       :element-type '(unsigned-byte 64)
+		       :initial-element 0)))
+    h)
+)
+
 (defun save_abc (a b c)
   (let ((bytes (make-array 3
 			   :element-type '(unsigned-byte 64)
