@@ -1225,6 +1225,7 @@
 (defun test1 ()
   (let ((data (make-array 8
 			  :element-type '(unsigned-byte 64)
-			  :initial-element 97)))
+			  :initial-element 0)))
+    (setf (aref data 0) #x01)
     (print (write-to-string (crysp_tiger data) :base 16)))
 )
