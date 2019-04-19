@@ -1171,7 +1171,7 @@
 
 (defun process_block (h0 h1 h2 x)
   (if (not (arrayp x))
-      (return-from pass (make-array 3
+      (return-from process_block (make-array 3
 				    :element-type '(unsigned-byte 64)
 				    :initial-element 0)))
 
