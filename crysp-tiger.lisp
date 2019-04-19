@@ -23,6 +23,8 @@
 ;; (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 ;; CRYSP, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+;; Only a single 512-bit block is processed.
+
 (defvar s_table_1
   (make-array 256
 	      :element-type '(unsigned-byte 64)
@@ -1086,25 +1088,35 @@
 		#xffffffffffffffff))
   (setf (aref x 1) (logxor (aref x 0) (aref x 1)))
   (setf (aref x 2) (logand (+ (aref x 1) (aref x 2)) #xffffffffffffffff))
-  (setf (aref x 3) (logand (- (aref x 3) (logxor (aref x 2)
-						 (ash (lognot (aref x 1)) 19)))
+  (setf (aref x 3) (logand (- (aref x 3)
+			      (logxor (aref x 2)
+				      (ash (logand (lognot (aref x 1))
+						   #xffffffffffffffff)
+					   19)))
 			   #xffffffffffffffff))
   (setf (aref x 4) (logxor (aref x 3) (aref x 4)))
   (setf (aref x 5) (logand (+ (aref x 4) (aref x 5)) #xffffffffffffffff))
   (setf (aref x 6) (logand (- (aref x 6)
 			      (logxor (aref x 5)
-				      (ash (lognot (aref x 4)) -23)))
+				      (ash (logand (lognot (aref x 4))
+						   #xffffffffffffffff)
+					   -23)))
 			   #xffffffffffffffff))
   (setf (aref x 7) (logxor (aref x 6) (aref x 7)))
   (setf (aref x 0) (logand (+ (aref x 0) (aref x 7)) #xffffffffffffffff))
-  (setf (aref x 1) (logand (- (aref x 1) (logxor (aref x 0)
-						 (ash (lognot (aref x 7)) 19)))
+  (setf (aref x 1) (logand (- (aref x 1)
+			      (logxor (aref x 0)
+				      (ash (logand (lognot (aref x 7))
+						   #xffffffffffffffff)
+					   19)))
 			   #xffffffffffffffff))
   (setf (aref x 2) (logxor (aref x 1) (aref x 2)))
   (setf (aref x 3) (logand (+ (aref x 2) (aref x 3)) #xffffffffffffffff))
   (setf (aref x 4) (logand (- (aref x 4)
 			      (logxor (aref x 3)
-				      (ash (lognot (aref x 2)) -23)))
+				      (ash (logand (lognot (aref x 2))
+						   #xffffffffffffffff)
+					   -23)))
 			   #xffffffffffffffff))
   (setf (aref x 5) (logxor (aref x 4) (aref x 5)))
   (setf (aref x 6) (logand (+ (aref x 5) (aref x 6)) #xffffffffffffffff))
@@ -1120,52 +1132,79 @@
 				    :element-type '(unsigned-byte 64)
 				    :initial-element 0)))
 
-  (let ((bytes (make-array 3
+  (let ((aa a)
+	(bb b)
+	(bytes (make-array 3
 			   :element-type '(unsigned-byte 64)
-			   :initial-element 0)))
-    (setf (aref bytes 0) a)
-    (setf (aref bytes 1) b)
-    (setf (aref bytes 2) c)
-    (setf bytes (tiger_round (aref bytes 0)
-			     (aref bytes 1)
-			     (aref bytes 2)
+			   :initial-element 0))
+	(cc c))
+    (setf bytes (tiger_round aa
+			     bb
+			     cc
 			     (aref x 0)
 			     mul))
-    (setf bytes (tiger_round (aref bytes 1)
-			     (aref bytes 2)
-			     (aref bytes 0)
+    (setf aa (aref bytes 0))
+    (setf bb (aref bytes 1))
+    (setf cc (aref bytes 2))
+    (setf bytes (tiger_round bb
+			     cc
+			     aa
 			     (aref x 1)
 			     mul))
-    (setf bytes (tiger_round (aref bytes 2)
-			     (aref bytes 0)
-			     (aref bytes 1)
+    (setf aa (aref bytes 2))
+    (setf bb (aref bytes 0))
+    (setf cc (aref bytes 1))
+    (setf bytes (tiger_round cc
+			     aa
+			     bb
 			     (aref x 2)
 			     mul))
-    (setf bytes (tiger_round (aref bytes 0)
-			     (aref bytes 1)
-			     (aref bytes 2)
+    (setf aa (aref bytes 1))
+    (setf bb (aref bytes 2))
+    (setf cc (aref bytes 0))
+    (setf bytes (tiger_round aa
+			     bb
+			     cc
 			     (aref x 3)
 			     mul))
-    (setf bytes (tiger_round (aref bytes 1)
-			     (aref bytes 2)
-			     (aref bytes 0)
+    (setf aa (aref bytes 0))
+    (setf bb (aref bytes 1))
+    (setf cc (aref bytes 2))
+    (setf bytes (tiger_round bb
+			     cc
+			     aa
 			     (aref x 4)
 			     mul))
-    (setf bytes (tiger_round (aref bytes 2)
-			     (aref bytes 0)
-			     (aref bytes 1)
+    (setf aa (aref bytes 2))
+    (setf bb (aref bytes 0))
+    (setf cc (aref bytes 1))
+    (setf bytes (tiger_round cc
+			     aa
+			     bb
 			     (aref x 5)
 			     mul))
-    (setf bytes (tiger_round (aref bytes 0)
-			     (aref bytes 1)
-			     (aref bytes 2)
+    (setf aa (aref bytes 1))
+    (setf bb (aref bytes 2))
+    (setf cc (aref bytes 0))
+    (setf bytes (tiger_round aa
+			     bb
+			     cc
 			     (aref x 6)
 			     mul))
-    (setf bytes (tiger_round (aref bytes 1)
-			     (aref bytes 2)
-			     (aref bytes 0)
+    (setf aa (aref bytes 0))
+    (setf bb (aref bytes 1))
+    (setf cc (aref bytes 2))
+    (setf bytes (tiger_round bb
+			     cc
+			     aa
 			     (aref x 7)
 			     mul))
+    (setf aa (aref bytes 2))
+    (setf bb (aref bytes 0))
+    (setf cc (aref bytes 1))
+    (setf (aref bytes 0) aa)
+    (setf (aref bytes 1) bb)
+    (setf (aref bytes 2) cc)
     bytes)
 )
 
@@ -1175,23 +1214,32 @@
 				    :element-type '(unsigned-byte 64)
 				    :initial-element 0)))
 
-  (let ((bytes (make-array 3
+  (let ((aa h0)
+	(bb h1)
+	(bytes (make-array 3
 			   :element-type '(unsigned-byte 64)
 			   :initial-element 0))
+	(cc h2)
 	(h (make-array 3
 		       :element-type '(unsigned-byte 64)
 		       :initial-element 0)))
-    (setf (aref bytes 0) h0)
-    (setf (aref bytes 1) h1)
-    (setf (aref bytes 2) h2)
-    (setf bytes (pass (aref bytes 0) (aref bytes 1) (aref bytes 2) 5 x))
+    (setf bytes (pass aa bb cc 5 x))
+    (setf aa (aref bytes 0))
+    (setf bb (aref bytes 1))
+    (setf cc (aref bytes 2))
     (setf x (key_schedule x))
-    (setf bytes (pass (aref bytes 2) (aref bytes 0) (aref bytes 1) 7 x))
+    (setf bytes (pass cc aa bb 7 x))
+    (setf aa (aref bytes 1))
+    (setf bb (aref bytes 2))
+    (setf cc (aref bytes 0))
     (setf x (key_schedule x))
-    (setf bytes (pass (aref bytes 1) (aref bytes 2) (aref bytes 0) 9 x))
-    (setf (aref h 0) (logxor (aref bytes 0) h0))
-    (setf (aref h 1) (logand (- (aref bytes 1) h1) #xffffffffffffffff))
-    (setf (aref h 2) (logand (+ (aref bytes 2) h2) #xffffffffffffffff))
+    (setf bytes (pass bb cc aa 9 x))
+    (setf aa (aref bytes 2))
+    (setf bb (aref bytes 0))
+    (setf cc (aref bytes 1))
+    (setf (aref h 0) (logxor aa h0))
+    (setf (aref h 1) (logand (- bb h1) #xffffffffffffffff))
+    (setf (aref h 2) (logand (+ cc h2) #xffffffffffffffff))
     h)
 )
 
@@ -1226,6 +1274,6 @@
   (let ((data (make-array 8
 			  :element-type '(unsigned-byte 64)
 			  :initial-element 0)))
-    (setf (aref data 0) #x01)
+    (setf (aref data 0) #x01) ;; Padding.
     (print (write-to-string (crysp_tiger data) :base 16)))
 )
